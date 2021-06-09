@@ -1,0 +1,30 @@
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi
+
+# don't put duplicate lines in the history. See bash(1) for more options
+export HISTCONTROL=ignoredups
+# ... and ignore same sucessive entries.
+export HISTCONTROL=ignoreboth
+export HISTSIZE=100000
+shopt -s checkwinsize
+
+# enable ssh auto-completion for hosts listed in .ssh/config
+complete -o bashdefault -o default -o nospace -F _ssh_hosts ssh 2>/dev/null \
+   || complete -o default -o nospace -F _ssh_hosts ssh
+complete -o bashdefault -o default -o nospace -F _ssh_hosts scp 2>/dev/null \
+   || complete -o default -o nospace -F _ssh_hosts scp
+
+# enables auto-completion of commands in your history with the up/down arrow keys
+# if block checks if the session is interactive to avoid getting bind warnings when
+# scp files, etc. The $- variable represents the current options set for the shell.
+[[ $- == *i* ]] && bind '"\e[A":history-search-backward'
+[[ $- == *i* ]] && bind '"\e[B":history-search-forward'
+
+NO_COLOR="\[\033[0m\]"
+export PS1="${PS1}$(parse_git_branch)$NO_COLOR\$ "
+export PS1="\[\033[35m\]\t\[\033[m\]-\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$(parse_git_branch)$NO_COLOR\n\[\033[36m\]ENV$NO_COLOR\$ "
+

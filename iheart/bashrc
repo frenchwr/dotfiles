@@ -1,0 +1,77 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific aliases and functions
+
+alias show_used_af_ports="ps -ef | awk '/[a]irflow webserver -p/ { print \$NF }'"
+alias setup_airflow_env="source /data/environments/airflow/bin/activate"
+alias mkdatedir="mkdir $(date +%Y-%m-%d)"
+alias datestr="date +%Y-%m-%dT%H:%M:%S"
+alias scrun="scalac *.scala && scala Hello"
+alias lint_flake8="flake8 --select=E101,E9,F401,F821" # pass directory or file
+alias orc_dump="java -jar /home/wfrench/tools/orc-1.6.7/java/tools/target/orc-tools-1.6.7-uber.jar"
+
+function _ssh_hosts() {
+   local cur="${COMP_WORDS[COMP_CWORD]}"
+   COMPREPLY=()
+   local ssh_hosts=`grep ^Host ~/.ssh/config | cut -d' ' -f2 | xargs`
+   [[ ! ${cur} == -* ]] && COMPREPLY=( $(compgen -W "${ssh_hosts}" -- ${cur}) )
+}
+
+function parse_git_branch () {
+   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+# A wrapper around the "airflow webserver -p port" command 
+# Checks if port is in use by other local airflow webserver instances
+function airflow-webserver () {
+   if [ $# -ne 1 ]; then
+      echo "Usage: $FUNCNAME port"
+      return 1
+   fi
+   port=$1
+   if show_used_af_ports | grep -Fxq $port
+   then
+      echo "Sorry, port $port is in use by another local airflow webserver instance, please try a different port."
+      echo "The ports currently in use are: "
+      show_used_af_ports
+      return 1
+   else
+      echo "Starting airflow webserver on port $port!"
+      echo "http://$(hostname):$port"
+      sleep 10
+      airflow webserver -p $1
+   fi 
+}
+
+# Wrapper around airflow variables --get
+# Filters out INFO logs and stderr, also accepts multiple variables 
+function get_airflow_vars () {
+   if [ $# -eq 0 ]; then
+      echo "Usage: $FUNCNAME var_1 var_2 ..."
+      return 1
+   fi
+   for var in "$@"
+   do
+      result=$(airflow variables --get $var 2> /dev/null | tail -n 1)
+      echo "$var $result"
+   done
+}
+
+# Designed for extracting a multiline SQL command from a file and 
+# echo'ing it on a single line, which is convenient if you want to run the 
+# command from an interactive Hive session. Removes '|' characters as these
+# are often used in Spark SQL query strings.
+function convert_sql_string_to_single_line() {
+    if [ $# -ne 3 ]; then
+       echo "Usage: $FUNCNAME start_string end_string file"
+       return 1
+    fi
+    big_str=$(sed -n "/$1/,/$2/p;/$2/q" $3 | tr -d '|' | tr -d '\n' | tr -s '[:space:]')
+    echo -e "\nDon't forget to replace variables from query string if needed, e.g. dt variables!\n\n$big_str\n"
+}
+
