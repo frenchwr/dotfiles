@@ -57,5 +57,5 @@ fi
 echo " "
 git remote set-url origin git@github.com:frenchwr/dotfiles.git
 echo "To fetch your GH private key, ssh to a machine containing the key and run:"
-echo "ssh ~/.ssh/id_rsa ${USER}@${HOSTNAME}:~/.ssh/"
+echo "scp ~/.ssh/id_rsa ${USER}@${HOSTNAME}:~/.ssh/"
 echo " "
