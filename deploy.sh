@@ -3,19 +3,20 @@
 # Script for deploying dotfiles to your home directory.
 #
 
-if [ $# -ne 1 ]; then
-   echo "Usage: $0 ENV"
+if [ $# -ne 2 ]; then
+   echo "Usage: $0 ROLE ENV"
    exit 1
 fi
 
-ENV=$(echo $1 | tr -d '/')
+ROLE=$(echo $1 | tr -d '/')
+ENV=$2
 
-if [ ! -d ${ENV} ]; then
-   echo "${ENV} not a subdirectory!"
+if [ ! -d ${ROLE} ]; then
+   echo "${ROLE} not a subdirectory!"
    exit 1
 fi
 
-for FILE in $(ls $ENV);
+for FILE in $(ls $ROLE);
 do
 
    echo " "
@@ -29,7 +30,7 @@ do
       fi
    fi
 
-   SOURCE_FILE=${PWD}/${ENV}/${FILE}
+   SOURCE_FILE=${PWD}/${ROLE}/${FILE}
    echo "Sym linking ${DOTFILE} to ${SOURCE_FILE}..."
    ln -sf ${SOURCE_FILE} ${DOTFILE}
    if [ -L ${DOTFILE} ] ; then
@@ -48,6 +49,17 @@ do
    fi
 
 done
+
+if [ ${ENV} = "prod" ] ; then
+   echo 'export PS1="\[\033[35m\]\t\[\033[m\]-\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$(parse_git_branch)$NO_COLOR\n\[\033[4;31m\]PROD$NO_COLOR\$ "' >> ${PWD}/${ROLE}/bash_profile
+   echo " " >> ${PWD}/${ROLE}/bash_profile
+elif [ ${ENV} = "staging" ] ; then
+   echo 'export PS1="\[\033[35m\]\t\[\033[m\]-\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$(parse_git_branch)$NO_COLOR\n\[\033[36m\]staging$NO_COLOR\$ "' >> ${PWD}/${ROLE}/bash_profile
+   echo " " >> ${PWD}/${ROLE}/bash_profile
+else
+   echo "Custom prompt not found for environment ${ENV}. Only 'prod' and 'staging' supported."
+   echo " "
+fi
 
 if [ ${SHELL} = "/bin/bash" ]; then
    echo " "

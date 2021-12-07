@@ -26,5 +26,3 @@ complete -o bashdefault -o default -o nospace -F _ssh_hosts scp 2>/dev/null \
 
 NO_COLOR="\[\033[0m\]"
 export PS1="${PS1}$(parse_git_branch)$NO_COLOR\$ "
-export PS1="\[\033[35m\]\t\[\033[m\]-\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$(parse_git_branch)$NO_COLOR\n\[\033[36m\]ENV$NO_COLOR\$ "
-

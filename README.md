@@ -3,5 +3,5 @@
 ## Example deploy
 
 ```
-bash deploy.sh iheart
+bash deploy.sh iheart staging
 ```
