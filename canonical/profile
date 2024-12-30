@@ -1,0 +1,44 @@
+# ~/.profile: executed by the command interpreter for login shells.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+# exists.
+# see /usr/share/doc/bash/examples/startup-files for examples.
+# the files are located in the bash-doc package.
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+# don't put duplicate lines in the history. See bash(1) for more options
+export HISTCONTROL=ignoredups
+# ... and ignore same sucessive entries.
+export HISTCONTROL=ignoreboth
+export HISTSIZE=100000
+shopt -s checkwinsize
+
+# enable ssh auto-completion for hosts listed in .ssh/config
+complete -o bashdefault -o default -o nospace -F _ssh_hosts ssh 2>/dev/null \
+   || complete -o default -o nospace -F _ssh_hosts ssh
+complete -o bashdefault -o default -o nospace -F _ssh_hosts scp 2>/dev/null \
+   || complete -o default -o nospace -F _ssh_hosts scp
+
+#NO_COLOR="\[\033[0m\]"
+#export PS1="${PS1}$(parse_git_branch)$NO_COLOR\$ "
+

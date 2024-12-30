@@ -1,0 +1,24 @@
+[user]
+	email = will.french@canonical.com
+	name = Will French
+[color]
+	ui = auto
+[core]
+	edit = /usr/bin/vi
+	pager = less -F -X
+	whitespace = cr-at-eol
+[commit]
+	verbose = true
+[pager]
+	branch = false
+[alias]
+	log-short = log --oneline
+	log-pretty = log --pretty=format:\"%h %s %an\" --graph
+	tree = ! git ls-tree --full-name --name-only -t -r HEAD | sed -e \"s/[^-][^\\/]*\\//   |/g\" -e \"s/|\\([^ ]\\)/|-- \\1/\"
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[init]
+	defaultBranch = main

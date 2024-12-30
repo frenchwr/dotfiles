@@ -3,8 +3,8 @@
 # Script for deploying dotfiles to your home directory.
 #
 
-if [ $# -ne 2 ]; then
-   echo "Usage: $0 ROLE ENV"
+if [ $# -lt 1 ]; then
+   echo "Usage: $0 ROLE [ENV]"
    exit 1
 fi
 
@@ -50,7 +50,10 @@ do
 
 done
 
-if [ ${ENV} = "prod" ] ; then
+# carry over from iheart to customize prompt based on staging or prod environment
+if [ -z ${ENV} ] ; then
+   echo "Note: no custom prompt requested"
+elif [ ${ENV} = "prod" ] ; then
    echo 'export PS1="\[\033[35m\]\t\[\033[m\]-\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$(parse_git_branch)$NO_COLOR\n\[\033[4;31m\]PROD$NO_COLOR\$ "' >> ${PWD}/${ROLE}/bash_profile
    echo " " >> ${PWD}/${ROLE}/bash_profile
 elif [ ${ENV} = "staging" ] ; then
@@ -61,13 +64,3 @@ else
    echo " "
 fi
 
-if [ ${SHELL} = "/bin/bash" ]; then
-   echo " "
-   echo "To source your shell init files:"
-   echo "source ~/.bashrc && source ~/.bash_profile"
-fi
-echo " "
-git remote set-url origin git@github.com:frenchwr/dotfiles.git
-echo "To fetch your GH private key, ssh to a machine containing the key and run:"
-echo "scp ~/.ssh/id_rsa ${USER}@${HOSTNAME}:~/.ssh/"
-echo " "

@@ -1,0 +1,4 @@
+alias vim="nvim"
+alias mkdatedir="mkdir $(date +%Y-%m-%d)"
+alias datestr="date +%Y-%m-%dT%H:%M:%S"
+alias open_latest_screenshot='open $HOME/Pictures/Screenshots/"$(ls -t $HOME/Pictures/Screenshots/ | head -n1)"'
