@@ -4,7 +4,7 @@
 [color]
 	ui = auto
 [core]
-	edit = /usr/bin/vi
+	edit = /usr/bin/vim
 	pager = less -F -X
 	whitespace = cr-at-eol
 [commit]
