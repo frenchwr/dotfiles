@@ -1,6 +1,7 @@
 [user]
 	email = will.french@canonical.com
 	name = Will French
+	signingkey = /home/will/.ssh/id_rsa.pub
 [color]
 	ui = auto
 [core]
@@ -9,6 +10,7 @@
 	whitespace = cr-at-eol
 [commit]
 	verbose = true
+	gpgsign = true
 [pager]
 	branch = false
 [alias]
@@ -22,3 +24,5 @@
 	required = true
 [init]
 	defaultBranch = main
+[gpg]
+	format = ssh
