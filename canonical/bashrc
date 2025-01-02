@@ -165,6 +165,36 @@ function mpfresh() {
    multipass shell "${vm}"
 }
 
+# sync repo from local to remote
+function sync_repo_to_remote() {
+   if [ $# -ne 2 ]; then
+      echo "Usage: $FUNCNAME repo_path remote_host"
+      echo "Example: $FUNCNAME $HOME/code/intel-npu-driver-snap tf-npu-dell-xps-13-9340-c32267"
+      return 1
+   fi
+   repo_path=$(realpath $1) # realpath will strip to the trailing slash for us
+   remote_host=$2
+   rsync -a $repo_path $remote_host:~ubuntu # assume ubuntu user on remote host
+}
+
+# sync repo from remote to local
+#
+# note, I don't plan to use this as it feels unsafe to sync in both
+# directions. instead, I will always edit locally and sync to remote as
+# needed. I will leave this function here commented out in case later
+# I decide this is needed.
+#
+#function sync_repo_from_remote() {
+#   if [ $# -ne 2 ]; then
+#      echo "Usage: $FUNCNAME remote_host:remote_path local_parent_path"
+#      echo "Example: $FUNCNAME tf-npu-dell-xps-13-9340-c32267:~ubuntu/intel-npu-driver-snap $HOME/code/"
+#      return 1
+#   fi
+#   remote_host_and_path=$1
+#   local_parent_path=$2
+#   rsync -a $remote_host_and_path $local_parent_path
+#}
+
 function git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
