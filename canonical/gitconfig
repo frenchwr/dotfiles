@@ -26,3 +26,5 @@
 	defaultBranch = main
 [gpg]
 	format = ssh
+[gitubuntu]
+	lpuser = wfrench
