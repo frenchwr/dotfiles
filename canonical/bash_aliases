@@ -2,3 +2,5 @@ alias mkdatedir="mkdir $(date +%Y-%m-%d)"
 alias datestr="date +%Y-%m-%dT%H:%M:%S"
 alias open_latest_screenshot='open $HOME/Pictures/Screenshots/"$(ls -t $HOME/Pictures/Screenshots/ | head -n1)"'
 alias latest_download='echo $HOME/Downloads/"$(ls -t $HOME/Downloads | head -n1)"'
+alias latest_snapcraft_log='echo $HOME/.local/state/snapcraft/log/"$(ls -t $HOME/.local/state/snapcraft/log/ | head -n1)"'
+alias lintian_strict='lintian -E -v -I --pedantic'

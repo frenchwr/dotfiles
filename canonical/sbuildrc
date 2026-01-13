@@ -1,6 +1,7 @@
 # Name to use as override in .changes files for the Maintainer: field
 # (mandatory, no default!).
-$maintainer_name='Will French <will.french@canonical.com>';
+#$maintainer_name='Will French <will.french@canonical.com>';
+$maintainer_name='Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>';
 
 # Default distribution to build.
 $distribution = "noble";
@@ -21,6 +22,12 @@ $purge_build_deps = 'successful';
 
 # Directory for writing build logs to
 $log_dir=$ENV{HOME}."/ubuntu/logs";
+
+$external_commands = {
+	"chroot-update-failed-commands" => [ [ '%SBUILD_SHELL' ] ],
+	"build-deps-failed-commands" => [ [ '%SBUILD_SHELL' ] ],
+	"build-failed-commands" => [ [ '%SBUILD_SHELL' ] ],
+};
 
 # don't remove this, Perl needs it:
 1;

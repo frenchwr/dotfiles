@@ -8,16 +8,25 @@ case $- in
       *) return;;
 esac
 
+# pyenv
+#export PYENV_ROOT="$HOME/.pyenv"
+#[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+#if command -v pyenv 2>&1 >/dev/null
+#then
+#   eval "$(pyenv init -)"
+#   eval "$(pyenv virtualenv-init -)"
+#fi
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
-HISTCONTROL=ignoreboth
+HISTCONTROL=ignoreboth:erasedups
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=100000
+HISTFILESIZE=100000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -129,6 +138,16 @@ function _ssh_hosts() {
 [[ $- == *i* ]] && bind '"\e[A":history-search-backward'
 [[ $- == *i* ]] && bind '"\e[B":history-search-forward'
 
+export GPGKEY=DEDD623C985D614C131E0217A3CB445B27EF8863
+export DEBEMAIL="will.french@canonical.com"
+export EMAIL="will.french@canonical.com"
+export DEBFULLNAME="Will French"
+export PATH=$PATH:$HOME/bin
+export EDITOR=vim
+export VISUAL=vim
+# After each command, append to the history file and reread it
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+
 # firefox snap will not read from hidden directories in home directory,
 # so copy it out to $HOME/tmp and open it from there.
 function firefox_snap_open_html_doc() {
@@ -200,22 +219,65 @@ function git_branch() {
 }
 export PS1="\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] \[\033[00;32m\]\$(git_branch)\[\033[00m\]\$ "
 
-export GPGKEY=DEDD623C985D614C131E0217A3CB445B27EF8863
-export DEBEMAIL="will.french@canonical.com"
-export EMAIL="will.french@canonical.com"
-export DEBFULLNAME="Will French"
-export PATH=$PATH:$HOME/bin
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 2>&1 >/dev/null
-then
-   eval "$(pyenv init -)"
-   eval "$(pyenv virtualenv-init -)"
-fi
-
 # quilt
 alias dquilt="quilt --quiltrc=${HOME}/.quiltrc-dpkg"
 . /usr/share/bash-completion/completions/quilt
 complete -F _quilt_completion $_quilt_complete_opt dquilt
+
+function ollama_ask()
+{
+  if [ "$#" -ne 1 ]; then
+    echo "Usage: ${FUNCNAME[0]} \"<prompt>\""
+    return 1
+  fi;
+  prompt=$1
+  echo -e "prompt: \"${prompt}\"\n"
+  json_load="{
+    \"model\": \"llama3.2:1b\",
+    \"prompt\": \""${prompt}"\",
+    \"stream\": false
+  }"
+  echo -e $(curl -s http://localhost:11434/api/generate -d "${json_load}" | jq '.response')
+}
+
+function opea_ask()
+{
+  if [ "$#" -ne 1 ]; then
+    echo "Usage: ${FUNCNAME[0]} \"<prompt>\""
+    return 1
+  fi;
+  prompt=$1
+  echo -e "prompt: \"${prompt}\"\n"
+  json_load="{
+    \"messages\": \""${prompt}"\",
+    \"stream\": false
+  }"
+  echo -e $(curl -s http://localhost:8888/v1/chatqna -H "Content-Type: application/json" -d "${json_load}" | jq '.choices[0].message.content')
+}
+
+function strace_snap()
+{
+  if [ "$#" -ne 1 ]; then
+    echo "Usage: ${FUNCNAME[0]} snap.command"
+    return 1
+  fi;
+  cmd=$1
+  snap run --strace='-e trace=openat,open' $cmd
+}
+
+function debtree_create()
+{
+  if [ "$#" -ne 1 ]; then
+    echo "Usage: ${FUNCNAME[0]} package"
+    return 1
+  fi;
+  debpkg=$1
+  tmpdir=$(mktemp -d)
+  debtree $debpkg | dot -Tsvg > "${tmpdir}/output.svg"
+  echo "Created image ${tmpdir}/output.svg"
+  open "${tmpdir}/output.svg"
+}
+
+. "$HOME/.local/bin/env"
+
+source '/home/will/.bash_completions/scpy.sh'

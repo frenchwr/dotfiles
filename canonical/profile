@@ -42,3 +42,5 @@ complete -o bashdefault -o default -o nospace -F _ssh_hosts scp 2>/dev/null \
 #NO_COLOR="\[\033[0m\]"
 #export PS1="${PS1}$(parse_git_branch)$NO_COLOR\$ "
 
+
+. "$HOME/.local/bin/env"
