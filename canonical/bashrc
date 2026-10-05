@@ -277,8 +277,3 @@ function debtree_create()
   echo "Created image ${tmpdir}/output.svg"
   open "${tmpdir}/output.svg"
 }
-
-. "$HOME/.local/bin/env"
-
-source '/home/will/.bash_completions/scpy.sh'
-
