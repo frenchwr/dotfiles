@@ -17,6 +17,8 @@
 	log-short = log --oneline
 	log-pretty = log --pretty=format:\"%h %s %an\" --graph
 	tree = ! git ls-tree --full-name --name-only -t -r HEAD | sed -e \"s/[^-][^\\/]*\\//   |/g\" -e \"s/|\\([^ ]\\)/|-- \\1/\"
+	# example: git gpg-sign commit -m "create a signed commit with gpg instead of ssh"
+	gpg-sign = "!f() { git -c gpg.format=openpgp -c user.signingkey=6D42B1A9B9E65074 \"$@\"; }; f"
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

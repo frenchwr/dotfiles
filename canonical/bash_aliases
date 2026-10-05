@@ -2,5 +2,11 @@ alias mkdatedir="mkdir $(date +%Y-%m-%d)"
 alias datestr="date +%Y-%m-%dT%H:%M:%S"
 alias open_latest_screenshot='open $HOME/Pictures/Screenshots/"$(ls -t $HOME/Pictures/Screenshots/ | head -n1)"'
 alias latest_download='echo $HOME/Downloads/"$(ls -t $HOME/Downloads | head -n1)"'
+# run like: cp "$(latest_screenshot)" buttons/layer.png
+alias latest_screenshot='ls -t ~/Pictures/Screenshots/*.png | head -n 1'
 alias latest_snapcraft_log='echo $HOME/.local/state/snapcraft/log/"$(ls -t $HOME/.local/state/snapcraft/log/ | head -n1)"'
+alias latest_sourcecraft_log='echo $HOME/.local/state/sourcecraft/log/"$(ls -t $HOME/.local/state/sourcecraft/log/ | head -n1)"'
 alias lintian_strict='lintian -E -v -I --pedantic'
+alias format_deb_file='fold -w 78 -s' # still requires manual adjustment of first col in many cases
+# dpkg-buildpackage having trouble finding GPG key on LP when I have multiple keys using the same email
+alias dpkg-buildpackage="dpkg-buildpackage -k24DEE78EE87F0B4CC0BF2C5E6FB2C10887A6C1F2"

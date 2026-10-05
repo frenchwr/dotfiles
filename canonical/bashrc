@@ -138,7 +138,7 @@ function _ssh_hosts() {
 [[ $- == *i* ]] && bind '"\e[A":history-search-backward'
 [[ $- == *i* ]] && bind '"\e[B":history-search-forward'
 
-export GPGKEY=DEDD623C985D614C131E0217A3CB445B27EF8863
+export GPGKEY=24DEE78EE87F0B4CC0BF2C5E6FB2C10887A6C1F2
 export DEBEMAIL="will.french@canonical.com"
 export EMAIL="will.french@canonical.com"
 export DEBFULLNAME="Will French"
@@ -281,3 +281,4 @@ function debtree_create()
 . "$HOME/.local/bin/env"
 
 source '/home/will/.bash_completions/scpy.sh'
+
